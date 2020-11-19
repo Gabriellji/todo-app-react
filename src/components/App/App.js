@@ -41,10 +41,17 @@ class App extends Component {
     };
 
     onSearch = (e) => {
-        console.log(e.target.value)
         this.setState({
             search: e.target.value
         });
+    }
+
+    search = (items, search) => {
+        if(!search) {
+            return items;
+        }
+        return items.filter(item => item.label.toLowerCase()
+                            .includes(search.toLowerCase()));
     }
 
     addItem = (text) => {
@@ -84,6 +91,7 @@ class App extends Component {
         const { todoData, search } = this.state;
         const doneCount = todoData.filter(el => el.done).length;
         const todoCount = todoData.length - doneCount;
+        const visibleItems = this.search(todoData, search);
         return (
             <div className="todo-app" >
                 <AppHeader toDo={todoCount} done={doneCount} />
@@ -96,7 +104,7 @@ class App extends Component {
                 <TodoList
                     search={search}
                     onDeleted={this.deleteItem}
-                    todos={todoData}
+                    todos={visibleItems}
                     onToggleDone={this.onToggleDone}
                     onToggleImportant={this.onToggleImportant}
                 />
