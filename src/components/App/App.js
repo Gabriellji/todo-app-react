@@ -18,7 +18,8 @@ class App extends Component {
             this.createTodoItem('Make Awesome App'),
             this.createTodoItem('Have a lunch')
         ],
-        search: ''
+        search: '',
+        filter: 'all'
     };
 
     createTodoItem(label) {
@@ -46,12 +47,32 @@ class App extends Component {
         });
     }
 
+    onFilterChange = (filter) => {
+        this.setState({
+            filter
+        });
+    }
+
     search = (items, search) => {
-        if(!search) {
+        if (!search) {
             return items;
         }
         return items.filter(item => item.label.toLowerCase()
-                            .includes(search.toLowerCase()));
+            .includes(search.toLowerCase()));
+    }
+
+    filter(items, filter) {
+
+        switch (filter) {
+            case 'all':
+                return items;
+            case 'active':
+                return items.filter(item => !item.done);
+            case 'done':
+                return items.filter(item => item.done);
+            default:
+                return items;
+        }
     }
 
     addItem = (text) => {
@@ -88,10 +109,10 @@ class App extends Component {
     };
 
     render() {
-        const { todoData, search } = this.state;
+        const { todoData, search, filter } = this.state;
         const doneCount = todoData.filter(el => el.done).length;
         const todoCount = todoData.length - doneCount;
-        const visibleItems = this.search(todoData, search);
+        const visibleItems = this.filter(this.search(todoData, search), filter);
         return (
             <div className="todo-app" >
                 <AppHeader toDo={todoCount} done={doneCount} />
@@ -99,7 +120,10 @@ class App extends Component {
                     <SearchPanel
                         onChange={this.onSearch}
                     />
-                    <ItemStatusFilter />
+                    <ItemStatusFilter
+                        onFilterChange={this.onFilterChange}
+                        filter={filter}
+                    />
                 </div>
                 <TodoList
                     search={search}

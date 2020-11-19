@@ -22,12 +22,11 @@ class ItemAddForm extends Component {
 
     render() {
         const { value } = this.state;
-        const { onAdded } = this.props;
         return (
             <form className="item-add-form d-flex" onSubmit={this.handleSubmit}>
                 <input
                 className="form-control"
-                value={this.state.value}
+                value={value}
                 type="text"
                 onChange={this.handleChange}
                 placeholder="What needs to be done"
